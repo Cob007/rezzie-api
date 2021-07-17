@@ -3,6 +3,8 @@ package com.rezzie.api.user;
 import com.rezzie.api.user.contact.ContactInformation;
 import com.rezzie.api.user.education.Education;
 import com.rezzie.api.user.headline.Headline;
+import com.rezzie.api.user.licenseAndCertificate.LicenseAndCertificate;
+import com.rezzie.api.user.volunteerHistory.VolunteerHistory;
 import com.rezzie.api.user.workExperience.WorkExperience;
 
 import java.util.List;
@@ -34,6 +36,11 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Education> educations;
 
+    @OneToMany(mappedBy = "user")
+    private List<VolunteerHistory> volunteerHistories;
+
+    @OneToMany(mappedBy = "user")
+    private List<LicenseAndCertificate> licenseAndCertificates;
 
     protected User() { }
 
@@ -95,13 +102,34 @@ public class User {
         this.educations = educations;
     }
 
+    public List<VolunteerHistory> getVolunteerHistories() {
+        return volunteerHistories;
+    }
+
+    public void setVolunteerHistories(List<VolunteerHistory> volunteerHistories) {
+        this.volunteerHistories = volunteerHistories;
+    }
+
+    public List<LicenseAndCertificate> getLicenseAndCertificates() {
+        return licenseAndCertificates;
+    }
+
+    public void setLicenseAndCertificates(List<LicenseAndCertificate> licenseAndCertificates) {
+        this.licenseAndCertificates = licenseAndCertificates;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", posts=" + posts +
                 ", contactInformation=" + contactInformation +
+                ", headline=" + headline +
+                ", posts=" + posts +
+                ", workExperiences=" + workExperiences +
+                ", educations=" + educations +
+                ", volunteerHistories=" + volunteerHistories +
+                ", licenseAndCertificates=" + licenseAndCertificates +
                 '}';
     }
 }

@@ -1,4 +1,4 @@
-package com.rezzie.api.user.workExperience;
+package com.rezzie.api.user.volunteerHistory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rezzie.api.user.User;
@@ -8,23 +8,16 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-public class WorkExperience {
-
+public class VolunteerHistory {
     @Id
     @GeneratedValue
     private Integer id;
 
     @NotNull
-    private String title;
+    private String nameOfOrganization;
 
     @NotNull
-    private String employmentType;
-
-    @NotNull
-    private String companyName;
-
-    @NotNull
-    private String companyLocation;
+    private String role;
 
     @NotNull
     private Date startDate;
@@ -35,7 +28,7 @@ public class WorkExperience {
     private Date endDate;
 
     @NotNull
-    private String achievement;
+    private String roleDetails;
 
     @ManyToOne(fetch= FetchType.LAZY)
     @JsonIgnore
@@ -49,36 +42,20 @@ public class WorkExperience {
         return id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getNameOfOrganization() {
+        return nameOfOrganization;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setNameOfOrganization(String nameOfOrganization) {
+        this.nameOfOrganization = nameOfOrganization;
     }
 
-    public String getEmploymentType() {
-        return employmentType;
+    public String getRole() {
+        return role;
     }
 
-    public void setEmploymentType(String employmentType) {
-        this.employmentType = employmentType;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public String getCompanyLocation() {
-        return companyLocation;
-    }
-
-    public void setCompanyLocation(String companyLocation) {
-        this.companyLocation = companyLocation;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public Date getStartDate() {
@@ -105,12 +82,12 @@ public class WorkExperience {
         this.endDate = endDate;
     }
 
-    public String getAchievement() {
-        return achievement;
+    public String getRoleDetails() {
+        return roleDetails;
     }
 
-    public void setAchievement(String achievement) {
-        this.achievement = achievement;
+    public void setRoleDetails(String roleDetails) {
+        this.roleDetails = roleDetails;
     }
 
     public User getUser() {

@@ -6,6 +6,10 @@ import com.rezzie.api.user.education.Education;
 import com.rezzie.api.user.education.EducationRepository;
 import com.rezzie.api.user.headline.Headline;
 import com.rezzie.api.user.headline.HeadlineRepository;
+import com.rezzie.api.user.licenseAndCertificate.LicenseAndCertificate;
+import com.rezzie.api.user.licenseAndCertificate.LicenseAndCertificateRepository;
+import com.rezzie.api.user.volunteerHistory.VolunteerHistory;
+import com.rezzie.api.user.volunteerHistory.VolunteerHistoryRepository;
 import com.rezzie.api.user.workExperience.WorkExperience;
 import com.rezzie.api.user.workExperience.WorkExperienceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +27,6 @@ import java.util.Optional;
 public class AppResource {
 
     @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -39,6 +40,12 @@ public class AppResource {
 
     @Autowired
     private EducationRepository educationRepository;
+
+    @Autowired
+    private VolunteerHistoryRepository volunteerHistoryRepository;
+
+    @Autowired
+    private LicenseAndCertificateRepository licenseAndCertificateRepository;
 
     @GetMapping("/api/users")
     @ResponseStatus(code = HttpStatus.OK)
@@ -345,6 +352,156 @@ public class AppResource {
         educationRes.setData(educationOptional.get());
         return educationRes;
     }
+
+    /******
+     * VolunteerHistory
+     * */
+    @PostMapping("/api/users/{id}/volunteerHistory")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<VolunteerHistory> createVolunteerHistory(@PathVariable int id,
+                                                        @RequestBody VolunteerHistory volunteerHistory) {
+
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<VolunteerHistory> volunteerHistoryRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            volunteerHistoryRes.setStatus(false);
+            volunteerHistoryRes.setMessage("User not found");
+            volunteerHistoryRes.setData(null);
+            return volunteerHistoryRes;
+        }
+        User user = userOptional.get();
+        volunteerHistory.setUser(user);
+        volunteerHistoryRepository.save(volunteerHistory);
+
+        volunteerHistoryRes.setStatus(true);
+        volunteerHistoryRes.setMessage("Created successfully");
+        volunteerHistoryRes.setData(volunteerHistory);
+        return volunteerHistoryRes;
+    }
+
+    @GetMapping("/api/users/{id}/volunteerHistory")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<List<VolunteerHistory>> getAllVolunteerHistoryByUserId(@PathVariable int id) {
+
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<List<VolunteerHistory>> volunteerHistoryRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            volunteerHistoryRes.setStatus(false);
+            volunteerHistoryRes.setMessage("User not found");
+            volunteerHistoryRes.setData(null);
+            return volunteerHistoryRes;
+        }
+
+        volunteerHistoryRes.setStatus(true);
+        volunteerHistoryRes.setMessage("Created successfully");
+        volunteerHistoryRes.setData(userOptional.get().getVolunteerHistories());
+        return volunteerHistoryRes;
+    }
+
+
+    @GetMapping("/api/users/{id}/volunteerHistory/{volunteerHistoryId}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<VolunteerHistory> getAllVolunteerHistoryByUserIdAndEducationId
+            (@PathVariable int id, @PathVariable int volunteerHistoryId) {
+
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<VolunteerHistory> volunteerHistoryRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            volunteerHistoryRes.setStatus(false);
+            volunteerHistoryRes.setMessage("User not found");
+            volunteerHistoryRes.setData(null);
+            return volunteerHistoryRes;
+        }
+
+        Optional<VolunteerHistory> volunteerHistoryOptional =
+                volunteerHistoryRepository.findById(volunteerHistoryId);
+        if(!volunteerHistoryOptional.isPresent()) {
+            volunteerHistoryRes.setStatus(false);
+            volunteerHistoryRes.setMessage("work experience not found");
+            volunteerHistoryRes.setData(null);
+            return volunteerHistoryRes;
+        }
+        volunteerHistoryRes.setStatus(true);
+        volunteerHistoryRes.setMessage("Created successfully");
+        volunteerHistoryRes.setData(volunteerHistoryOptional.get());
+        return volunteerHistoryRes;
+    }
+
+
+    /******
+     * LicenseAndCertificate
+     * */
+    @PostMapping("/api/users/{id}/licenseAndCertificate")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<LicenseAndCertificate> createLicenseAndCertificate(@PathVariable int id,
+                                                             @RequestBody LicenseAndCertificate licenseAndCertificate) {
+
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<LicenseAndCertificate> licenseAndCertificateRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            licenseAndCertificateRes.setStatus(false);
+            licenseAndCertificateRes.setMessage("User not found");
+            licenseAndCertificateRes.setData(null);
+            return licenseAndCertificateRes;
+        }
+        User user = userOptional.get();
+        licenseAndCertificate.setUser(user);
+        licenseAndCertificateRepository.save(licenseAndCertificate);
+
+        licenseAndCertificateRes.setStatus(true);
+        licenseAndCertificateRes.setMessage("Created successfully");
+        licenseAndCertificateRes.setData(licenseAndCertificate);
+        return licenseAndCertificateRes;
+    }
+
+    @GetMapping("/api/users/{id}/licenseAndCertificate")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<List<LicenseAndCertificate>> getAllLicenseAndCertificateByUserId(@PathVariable int id) {
+
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<List<LicenseAndCertificate>> licenseAndCertificateRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            licenseAndCertificateRes.setStatus(false);
+            licenseAndCertificateRes.setMessage("User not found");
+            licenseAndCertificateRes.setData(null);
+            return licenseAndCertificateRes;
+        }
+
+        licenseAndCertificateRes.setStatus(true);
+        licenseAndCertificateRes.setMessage("Created successfully");
+        licenseAndCertificateRes.setData(userOptional.get().getLicenseAndCertificates());
+        return licenseAndCertificateRes;
+    }
+
+
+    @GetMapping("/api/users/{id}/licenseAndCertificate/{licenseAndCertificateId}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<LicenseAndCertificate> getAllLicenseAndCertificateByUserIdAndEducationId
+            (@PathVariable int id, @PathVariable int licenseAndCertificateId) {
+
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<LicenseAndCertificate> licenseAndCertificateRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            licenseAndCertificateRes.setStatus(false);
+            licenseAndCertificateRes.setMessage("User not found");
+            licenseAndCertificateRes.setData(null);
+            return licenseAndCertificateRes;
+        }
+
+        Optional<LicenseAndCertificate> volunteerHistoryOptional =
+                licenseAndCertificateRepository.findById(licenseAndCertificateId);
+        if(!volunteerHistoryOptional.isPresent()) {
+            licenseAndCertificateRes.setStatus(false);
+            licenseAndCertificateRes.setMessage("work experience not found");
+            licenseAndCertificateRes.setData(null);
+            return licenseAndCertificateRes;
+        }
+        licenseAndCertificateRes.setStatus(true);
+        licenseAndCertificateRes.setMessage("Created successfully");
+        licenseAndCertificateRes.setData(volunteerHistoryOptional.get());
+        return licenseAndCertificateRes;
+    }
+
 
 
 
