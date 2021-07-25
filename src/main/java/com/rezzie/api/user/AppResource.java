@@ -165,24 +165,27 @@ public class AppResource {
         return userNewPost;
     }
 
+    /*
+    *         //Optional<User> userOptional = userRepository.findById(id);
+    *  /*if(!userOptional.isPresent()) {
+            return
+            *//*userAllPost.setStatus(false);
+            userAllPost.setMessage("User not found");
+            userAllPost.setData(null);
+            return userAllPost;*//*
+        }
+        *//*userAllPost.setStatus(true);
+        userAllPost.setMessage("Created successfully");
+        userAllPost.setData(userOptional.get().getContactInformation());*//*
+        return Res.successResponse("Created successfully", userOptional.get().getContactInformation());
+    */
+
     @GetMapping("/api/users/{id}/contact")
     @ResponseStatus(code = HttpStatus.OK)
     public Res<ContactInformation> getContactByUserId(@PathVariable int id) {
-        Optional<User> userOptional = userRepository.findById(id);
-
-        Res<ContactInformation> userAllPost = new Res<>();
-        if(!userOptional.isPresent()) {
-            userAllPost.setStatus(false);
-            userAllPost.setMessage("User not found");
-            userAllPost.setData(null);
-            return userAllPost;
-        }
-
-        userAllPost.setStatus(true);
-        userAllPost.setMessage("Created successfully");
-        userAllPost.setData(userOptional.get().getContactInformation());
-
-        return userAllPost;
+        return userRepository.findById(id).map(user ->
+                Res.successResponse("Created successfully", user.getContactInformation())
+        ).orElseGet( () ->Res.errorResponse("User not found"));
     }
 
     @PostMapping("/api/users/{id}/contact")
@@ -277,6 +280,34 @@ public class AppResource {
         workExperienceRes.setStatus(true);
         workExperienceRes.setMessage("Created successfully");
         workExperienceRes.setData(workExperienceOptional.get());
+        return workExperienceRes;
+    }
+
+    @DeleteMapping("/api/users/{id}/workexperience/{weId}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<WorkExperience> deleteAllWorkExperienceByUserIdAndExperienceId(
+            @PathVariable int id, @PathVariable int weId) {
+
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<WorkExperience> workExperienceRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            workExperienceRes.setStatus(false);
+            workExperienceRes.setMessage("User not found");
+            workExperienceRes.setData(null);
+            return workExperienceRes;
+        }
+
+        Optional<WorkExperience> workExperienceOptional =
+                workExperienceRepository.findById(weId);
+        if(!workExperienceOptional.isPresent()) {
+            workExperienceRes.setStatus(false);
+            workExperienceRes.setMessage("work experience not found");
+            workExperienceRes.setData(null);
+            return workExperienceRes;
+        }
+        workExperienceRepository.deleteById(weId);
+        workExperienceRes.setStatus(true);
+        workExperienceRes.setMessage("Delete successfully");
         return workExperienceRes;
     }
 

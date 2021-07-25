@@ -14,6 +14,14 @@ public class Res<T> {
         this.data = data;
     }
 
+    public static <T> Res<T> errorResponse(String errorMsg){
+        return new Res<T>(false, errorMsg, null);
+    }
+
+    public static <T> Res<T> successResponse(String successMsg, T data){
+        return new Res<T>(true, successMsg, data);
+    }
+
     public Boolean getStatus() {
         return status;
     }
