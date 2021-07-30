@@ -47,10 +47,34 @@ public class AppResource {
     @Autowired
     private LicenseAndCertificateRepository licenseAndCertificateRepository;
 
+    @PostMapping("/api/register")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public Res<UserRequest> register(@Valid @RequestBody UserRequest userProfile){
+        User user = new User();
+        user.setFirstName(userProfile.getFirstName());
+        return Res.successResponse("Created successfully",
+                userProfile);
+    }
+
+
+    @PostMapping("/api/login")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public Res<?> login(@Valid @RequestBody UserSignInRequest userSignInRequest) {
+        return userRepository.findByEmail(userSignInRequest.getEmail()).map(user ->
+                {
+                    if (user.getPassword() == userSignInRequest.getPassword()) {
+                        return Res.successResponse("Created successfully", user);
+                    } else {
+                        return Res.errorResponse("Incorrect Password");
+                    }
+                }
+        ).orElseGet(() -> Res.errorResponse("Email is not registered"));
+
+    }
     @GetMapping("/api/users")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<User> retrieveAllUsers() {
-        return userRepository.findAll();
+    public Res<List<User>> retrieveAllUsers() {
+        return Res.successResponse("Successful Response",userRepository.findAll());
     }
 
     @GetMapping("/api/users/{id}")
@@ -70,7 +94,7 @@ public class AppResource {
         return userRes;
     }
 
-    @PostMapping("/api/users")
+    /*@PostMapping("/api/users")
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<Object> createUser(@Valid @RequestBody User user) {
         User savedUser = userRepository.save(user);
@@ -78,7 +102,7 @@ public class AppResource {
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
-    }
+    }*/
 
     /*@GetMapping("/api/users/{id}/posts")
     @ResponseStatus(code = HttpStatus.OK)
@@ -169,16 +193,21 @@ public class AppResource {
     *         //Optional<User> userOptional = userRepository.findById(id);
     *  /*if(!userOptional.isPresent()) {
             return
-            *//*userAllPost.setStatus(false);
+            */
+    /*userAllPost.setStatus(false);
             userAllPost.setMessage("User not found");
             userAllPost.setData(null);
-            return userAllPost;*//*
+            return userAllPost;*/
+    /*
         }
-        *//*userAllPost.setStatus(true);
+        */
+    /*userAllPost.setStatus(true);
         userAllPost.setMessage("Created successfully");
-        userAllPost.setData(userOptional.get().getContactInformation());*//*
+        userAllPost.setData(userOptional.get().getContactInformation());*/
+    /*
         return Res.successResponse("Created successfully", userOptional.get().getContactInformation());
     */
+
 
     @GetMapping("/api/users/{id}/contact")
     @ResponseStatus(code = HttpStatus.OK)
