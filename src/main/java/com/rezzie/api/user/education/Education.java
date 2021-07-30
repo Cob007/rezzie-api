@@ -1,12 +1,9 @@
 package com.rezzie.api.user.education;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.rezzie.api.user.BasePojo;
 import com.rezzie.api.user.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
@@ -15,28 +12,27 @@ public class Education {
     @GeneratedValue
     private Integer id;
 
-    @NotNull
-    @Size(min=2, message="Name of School")
+    @Column(nullable = false)
     private String name;
 
-    @NotNull
+    @Column(nullable = false)
     private String degree;
 
-    @NotNull
+    @Column(nullable = false)
     private String fieldOfStudy;
 
-    @NotNull
+    @Column(nullable = false)
     private Date startDate;
 
     private Boolean isActive;
 
-    @NotNull
+    @Column(nullable = false)
     private Date endDate;
 
-    @NotNull
+    @Column(nullable = false)
     private String grade;
 
-    @NotNull
+    @Column(nullable = false)
     private String others;
 
     @ManyToOne(fetch= FetchType.LAZY)

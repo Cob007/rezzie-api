@@ -18,13 +18,16 @@ public class ContactInformation {
     @JsonIgnore
     private User user;
 
-    @NotEmpty
+    @Column(nullable = false)
     private String country;
-    @NotEmpty
+
+    @Column(nullable = false)
     private String city;
-    @NotNull
+
+    @Column(nullable = false)
     private String linkedInUrl;
-    @NotNull
+
+    @Column(nullable = false)
     private String portfolioUrl;
 
     public Integer getId() {

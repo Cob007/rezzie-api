@@ -22,8 +22,8 @@ public class Headline {
         return id;
     }
 
-    @NotNull
     @Size(min = 250)
+    @Column(nullable = false)
     private String details;
 
     public String getDetails() {

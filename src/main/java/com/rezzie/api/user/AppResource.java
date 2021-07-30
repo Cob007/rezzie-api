@@ -48,29 +48,39 @@ public class AppResource {
     private LicenseAndCertificateRepository licenseAndCertificateRepository;
 
     @PostMapping("/api/register")
-    @ResponseStatus(code = HttpStatus.CREATED)
-    public Res<UserRequest> register(@Valid @RequestBody UserRequest userProfile){
-        User user = new User();
-        user.setFirstName(userProfile.getFirstName());
-        return Res.successResponse("Created successfully",
-                userProfile);
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<?> register(@Valid @RequestBody UserRequest userProfile){
+        return userRepository.findByEmail(userProfile.getEmail()).map(user ->
+                Res.errorResponse("Email Already Exist")
+        ).orElseGet(() -> {
+            User userNew = new User();
+            userNew.setFirstName(userProfile.getFirstName());
+            userNew.setLastName(userProfile.getLastName());
+            userNew.setEmail(userProfile.getEmail());
+            userNew.setPassword(userProfile.getPassword());
+            userNew.setGender(userProfile.getGender());
+            userNew.setDateOfBirth(userProfile.getDateOfBirth());
+            userNew.setActive(true);
+            userRepository.save(userNew);
+            return Res.successResponse("Created successfully",
+                    userProfile);
+        });
     }
 
-
     @PostMapping("/api/login")
-    @ResponseStatus(code = HttpStatus.CREATED)
+    @ResponseStatus(code = HttpStatus.OK)
     public Res<?> login(@Valid @RequestBody UserSignInRequest userSignInRequest) {
         return userRepository.findByEmail(userSignInRequest.getEmail()).map(user ->
                 {
-                    if (user.getPassword() == userSignInRequest.getPassword()) {
+                    if (user.getPassword().equals(userSignInRequest.getPassword())) {
                         return Res.successResponse("Created successfully", user);
                     } else {
                         return Res.errorResponse("Incorrect Password");
                     }
                 }
         ).orElseGet(() -> Res.errorResponse("Email is not registered"));
-
     }
+
     @GetMapping("/api/users")
     @ResponseStatus(code = HttpStatus.OK)
     public Res<List<User>> retrieveAllUsers() {

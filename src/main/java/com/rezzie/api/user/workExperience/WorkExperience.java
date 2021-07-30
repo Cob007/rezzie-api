@@ -14,27 +14,27 @@ public class WorkExperience {
     @GeneratedValue
     private Integer id;
 
-    @NotNull
+    @Column(nullable = false)
     private String title;
 
-    @NotNull
+    @Column(nullable = false)
     private String employmentType;
 
-    @NotNull
+    @Column(nullable = false)
     private String companyName;
 
-    @NotNull
+    @Column(nullable = false)
     private String companyLocation;
 
-    @NotNull
+    @Column(nullable = false)
     private Date startDate;
 
     private Boolean isActive;
 
-    @NotNull
+    @Column(nullable = false)
     private Date endDate;
 
-    @NotNull
+    @Column(nullable = false)
     private String achievement;
 
     @ManyToOne(fetch= FetchType.LAZY)

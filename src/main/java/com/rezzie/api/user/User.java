@@ -15,31 +15,31 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(name = "user",
+        uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class User {
     @Id
     @GeneratedValue
     private Long id;
 
-    @NotNull
+    @Column(nullable = false)
     private String firstName;
 
-    @NotNull
+    @Column(nullable = false)
     private String lastName;
 
-    @NotNull
+    @Column(nullable = false)
     private String email;
 
-    @NotNull
+    @Column(nullable = false)
     @JsonIgnore
     private String password;
 
-
-    @NotNull
+    @Column(nullable = false)
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date dateOfBirth;
 
-    @NotNull
+    @Column(nullable = false)
     private String gender;
 
     private Boolean isActive;

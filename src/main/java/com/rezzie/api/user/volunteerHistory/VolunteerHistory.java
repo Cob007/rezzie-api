@@ -13,21 +13,21 @@ public class VolunteerHistory {
     @GeneratedValue
     private Integer id;
 
-    @NotNull
+    @Column(nullable = false)
     private String nameOfOrganization;
 
-    @NotNull
+    @Column(nullable = false)
     private String role;
 
-    @NotNull
+    @Column(nullable = false)
     private Date startDate;
 
     private Boolean isActive;
 
-    @NotNull
+    @Column(nullable = false)
     private Date endDate;
 
-    @NotNull
+    @Column(nullable = false)
     private String roleDetails;
 
     @ManyToOne(fetch= FetchType.LAZY)

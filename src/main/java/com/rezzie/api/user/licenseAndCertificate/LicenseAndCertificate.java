@@ -13,27 +13,27 @@ public class LicenseAndCertificate {
     @GeneratedValue
     private Integer id;
 
-    @NotNull
+    @Column(nullable = false)
     private String nameOfCertificate;
 
-    @NotNull
+    @Column(nullable = false)
     private String issuingOrganization;
 
-    @NotNull
+    @Column(nullable = false)
     private String role;
 
-    @NotNull
+    @Column(nullable = false)
     private Date issueDate;
 
     private Boolean canExpire;
 
-    @NotNull
+    @Column(nullable = false)
     private Date expirationDate;
 
-    @NotNull
+    @Column(nullable = false)
     private String credentialId;
 
-    @NotNull
+    @Column(nullable = false)
     private String credentialUrl;
 
     @ManyToOne(fetch= FetchType.LAZY)
