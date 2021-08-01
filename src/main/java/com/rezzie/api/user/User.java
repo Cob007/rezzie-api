@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
 public class User {
     @Id
     @GeneratedValue
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false)
     private String firstName;
@@ -44,34 +44,41 @@ public class User {
 
     private Boolean isActive;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "user")
     private ContactInformation contactInformation;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "user")
     private Headline headline;
 
+    @JsonIgnore
     @OneToMany(mappedBy="user")
     private List<Post> posts;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<WorkExperience> workExperiences;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Education> educations;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<VolunteerHistory> volunteerHistories;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<LicenseAndCertificate> licenseAndCertificates;
 
     protected User() { }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -205,4 +212,6 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+
 }

@@ -81,6 +81,19 @@ public class AppResource {
         ).orElseGet(() -> Res.errorResponse("Email is not registered"));
     }
 
+    @PostMapping("/api/forgot_password")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<?> forgotPassword(@Valid @RequestBody ForgetPasswordRequest forgetPasswordRequest) {
+        return userRepository.findByEmail(forgetPasswordRequest.getEmail()).map(user ->
+                {
+                    user.setPassword(user.getLastName());
+                    userRepository.save(user);
+                    return Res.successNoDataResponse("Password has been reset to your surname");
+                }
+        ).orElseGet(() -> Res.errorResponse("Email is not registered"));
+    }
+
+
     @GetMapping("/api/users")
     @ResponseStatus(code = HttpStatus.OK)
     public Res<List<User>> retrieveAllUsers() {
@@ -223,14 +236,14 @@ public class AppResource {
     @ResponseStatus(code = HttpStatus.OK)
     public Res<ContactInformation> getContactByUserId(@PathVariable int id) {
         return userRepository.findById(id).map(user ->
-                Res.successResponse("Created successfully", user.getContactInformation())
+                Res.successResponse("Fetched successfully", user.getContactInformation())
         ).orElseGet( () ->Res.errorResponse("User not found"));
     }
 
     @PostMapping("/api/users/{id}/contact")
     @ResponseStatus(code = HttpStatus.OK)
     public Res<ContactInformation> createContact(@PathVariable int id, @RequestBody ContactInformation contactInfo) {
-
+        System.out.println("user id.....-> "+ id);
         Optional<User> userOptional = userRepository.findById(id);
         Res<ContactInformation> userNewPost = new Res<>();
         if(!userOptional.isPresent()) {
@@ -256,6 +269,8 @@ public class AppResource {
     @ResponseStatus(code = HttpStatus.OK)
     public Res<WorkExperience> createWorkExperience(@PathVariable int id, @RequestBody WorkExperience workExperience) {
 
+        System.out.println("user id.....-> "+ id);
+
         Optional<User> userOptional = userRepository.findById(id);
         Res<WorkExperience> userNewPost = new Res<>();
         if(!userOptional.isPresent()) {
@@ -269,7 +284,7 @@ public class AppResource {
         workExperienceRepository.save(workExperience);
 
         userNewPost.setStatus(true);
-        userNewPost.setMessage("Created successfully");
+        userNewPost.setMessage("Successfully");
         userNewPost.setData(workExperience);
         return userNewPost;
     }

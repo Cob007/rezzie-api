@@ -14,12 +14,22 @@ public class Res<T> {
         this.data = data;
     }
 
+    public Res(Boolean status, String message) {
+        this.status = status;
+        this.message = message;
+    }
+
+
     public static <T> Res<T> errorResponse(String errorMsg){
         return new Res<T>(false, errorMsg, null);
     }
 
     public static <T> Res<T> successResponse(String successMsg, T data){
         return new Res<T>(true, successMsg, data);
+    }
+
+    public static <T> Res<T> successNoDataResponse(String successMsg){
+        return new Res<T>(true, successMsg);
     }
 
     public Boolean getStatus() {

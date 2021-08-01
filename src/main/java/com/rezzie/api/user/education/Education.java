@@ -1,5 +1,6 @@
 package com.rezzie.api.user.education;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rezzie.api.user.User;
 
@@ -22,11 +23,13 @@ public class Education {
     private String fieldOfStudy;
 
     @Column(nullable = false)
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date startDate;
 
     private Boolean isActive;
 
     @Column(nullable = false)
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date endDate;
 
     @Column(nullable = false)

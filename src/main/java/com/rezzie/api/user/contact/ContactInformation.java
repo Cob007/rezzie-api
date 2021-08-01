@@ -18,12 +18,15 @@ public class ContactInformation {
     @JsonIgnore
     private User user;
 
+    @NotNull
     @Column(nullable = false)
     private String country;
 
+    @NotNull
     @Column(nullable = false)
     private String city;
 
+    @NotNull
     @Column(nullable = false)
     private String linkedInUrl;
 
@@ -44,5 +47,37 @@ public class ContactInformation {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getLinkedInUrl() {
+        return linkedInUrl;
+    }
+
+    public void setLinkedInUrl(String linkedInUrl) {
+        this.linkedInUrl = linkedInUrl;
+    }
+
+    public String getPortfolioUrl() {
+        return portfolioUrl;
+    }
+
+    public void setPortfolioUrl(String portfolioUrl) {
+        this.portfolioUrl = portfolioUrl;
     }
 }
