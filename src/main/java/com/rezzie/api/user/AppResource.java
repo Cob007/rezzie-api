@@ -14,16 +14,14 @@ import com.rezzie.api.user.workExperience.WorkExperience;
 import com.rezzie.api.user.workExperience.WorkExperienceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class AppResource {
 
     @Autowired
@@ -58,8 +56,8 @@ public class AppResource {
             userNew.setLastName(userProfile.getLastName());
             userNew.setEmail(userProfile.getEmail());
             userNew.setPassword(userProfile.getPassword());
-            userNew.setGender(userProfile.getGender());
-            userNew.setDateOfBirth(userProfile.getDateOfBirth());
+            userNew.setGender(null);
+            userNew.setDateOfBirth(null);
             userNew.setActive(true);
             userRepository.save(userNew);
             return Res.successResponse("Created successfully",

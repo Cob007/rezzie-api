@@ -16,11 +16,11 @@ public class UserRequest {
     @NotNull
     private String email;
 
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date dateOfBirth;
+    /*@JsonFormat(pattern="yyyy-MM-dd")
+    private Date dateOfBirth;*/
 
-    @NotNull
-    private String gender;
+    /*@NotNull
+    private String gender;*/
 
     @NotNull
     private String password;
@@ -47,22 +47,6 @@ public class UserRequest {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
     }
 
     public String getPassword() {
