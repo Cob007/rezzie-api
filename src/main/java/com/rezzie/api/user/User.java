@@ -35,11 +35,11 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @Column(nullable = true)
+    @Column(updatable = true)
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date dateOfBirth;
 
-    @Column(nullable = true)
+    @Column(updatable = true)
     private String gender;
 
     private Boolean isActive;
