@@ -35,6 +35,13 @@ public class User {
     @JsonIgnore
     private String password;
 
+    @Column(nullable = true)
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private Date dateOfBirth;
+
+    @Column(nullable = true)
+    private String gender;
+
     private Boolean isActive;
 
     @JsonIgnore
@@ -138,6 +145,8 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", gender='" + gender + '\'' +
                 ", contactInformation=" + contactInformation +
                 ", headline=" + headline +
                 ", posts=" + posts +
@@ -170,6 +179,22 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public Boolean getActive() {

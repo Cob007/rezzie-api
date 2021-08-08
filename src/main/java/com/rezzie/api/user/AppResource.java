@@ -56,8 +56,8 @@ public class AppResource {
             userNew.setLastName(userProfile.getLastName());
             userNew.setEmail(userProfile.getEmail());
             userNew.setPassword(userProfile.getPassword());
-            //userNew.setGender(null);
-            //userNew.setDateOfBirth(null);
+            userNew.setGender(null);
+            userNew.setDateOfBirth(null);
             userNew.setActive(true);
             userRepository.save(userNew);
             return Res.successResponse("Created successfully",
