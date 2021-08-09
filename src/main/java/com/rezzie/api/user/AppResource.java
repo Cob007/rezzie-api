@@ -59,7 +59,7 @@ public class AppResource {
             userNew.setActive(true);
             userRepository.save(userNew);
             return Res.successResponse("Created successfully",
-                    userProfile);
+                    userNew);
         });
     }
 
