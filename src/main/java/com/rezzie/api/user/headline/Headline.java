@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rezzie.api.user.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.websocket.OnOpen;
 
 @Entity
 public class Headline {
@@ -22,8 +19,8 @@ public class Headline {
         return id;
     }
 
-    @Size(min = 250)
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = false, length=512)
     private String details;
 
     public String getDetails() {

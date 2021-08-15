@@ -17,12 +17,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class AppResource {
+
+    //-cp target/classes:target/dependency/* com.rezzie.api.user.AppResource
 
     @Autowired
     private UserRepository userRepository;
@@ -44,6 +48,7 @@ public class AppResource {
 
     @Autowired
     private LicenseAndCertificateRepository licenseAndCertificateRepository;
+
 
     @PostMapping("/api/register")
     @ResponseStatus(code = HttpStatus.OK)
@@ -89,6 +94,22 @@ public class AppResource {
         ).orElseGet(() -> Res.errorResponse("Email is not registered"));
     }
 
+
+    @GetMapping("/")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<?> test() {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("message", "Hello World!");
+        return Res.successResponse("Successful Response",attributes);
+    }
+
+    @GetMapping("/hello")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<?> testHello() {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("message", "Hello World Welcome!");
+        return Res.successResponse("Successful Response",attributes);
+    }
 
     @GetMapping("/api/users")
     @ResponseStatus(code = HttpStatus.OK)
@@ -200,6 +221,9 @@ public class AppResource {
         }
         User user = userOptional.get();
         headline.setUser(user);
+        if (headline.getDetails().length()<200){
+            return Res.errorResponse("Headline is less than 200");
+        }
         headlineRepository.save(headline);
 
         userNewPost.setStatus(true);
