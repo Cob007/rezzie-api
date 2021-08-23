@@ -33,6 +33,7 @@ public class Headline {
 
     @OneToOne(fetch= FetchType.LAZY)
     @JsonIgnore
+    @JoinColumn(name="user_id", nullable=false)
     private User user;
 
     public User getUser() {

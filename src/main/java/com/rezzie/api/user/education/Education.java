@@ -26,9 +26,8 @@ public class Education {
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date startDate;
 
-    private Boolean isActive;
+    private Boolean active;
 
-    @Column(nullable = false)
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date endDate;
 
@@ -40,6 +39,7 @@ public class Education {
 
     @ManyToOne(fetch= FetchType.LAZY)
     @JsonIgnore
+    @JoinColumn(name="user_id", nullable=false)
     private User user;
 
     public void setId(Integer id) {
@@ -83,11 +83,11 @@ public class Education {
     }
 
     public Boolean getActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(Boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public Date getEndDate() {

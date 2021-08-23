@@ -221,11 +221,12 @@ public class AppResource {
         }
         User user = userOptional.get();
         headline.setUser(user);
-        if (headline.getDetails().length()<200){
+        if (headline.getDetails().length()<200 ){
             return Res.errorResponse("Headline is less than 200");
+        } else if (headlineRepository.findAll().size()>=1){
+            return Res.errorResponse("Entry has already been made for this user");
         }
         headlineRepository.save(headline);
-
         userNewPost.setStatus(true);
         userNewPost.setMessage("Created successfully");
         userNewPost.setData(headline);
@@ -262,7 +263,7 @@ public class AppResource {
 
     @PostMapping("/api/users/{id}/contact")
     @ResponseStatus(code = HttpStatus.OK)
-    public Res<ContactInformation> createContact(@PathVariable int id, @RequestBody ContactInformation contactInfo) {
+    public Res<?> createContact(@PathVariable int id, @RequestBody ContactInformation contactInfo) {
         System.out.println("user id.....-> "+ id);
         Optional<User> userOptional = userRepository.findById(id);
         Res<ContactInformation> userNewPost = new Res<>();
@@ -272,14 +273,16 @@ public class AppResource {
             userNewPost.setData(null);
             return userNewPost;
         }
+
+        if (contactInformationRepository.findAll().size()>=1){
+            return Res.errorResponse("Entry has already been made for this user");
+        }
+
         User user = userOptional.get();
         contactInfo.setUser(user);
         contactInformationRepository.save(contactInfo);
+        return Res.successResponse("Created successfully", user.getContactInformation());
 
-        userNewPost.setStatus(true);
-        userNewPost.setMessage("Created successfully");
-        userNewPost.setData(contactInfo);
-        return userNewPost;
     }
 
 /******

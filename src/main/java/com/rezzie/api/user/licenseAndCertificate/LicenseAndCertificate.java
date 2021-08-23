@@ -38,6 +38,7 @@ public class LicenseAndCertificate {
 
     @ManyToOne(fetch= FetchType.LAZY)
     @JsonIgnore
+    @JoinColumn(name="user_id", nullable=false)
     private User user;
 
     public void setId(Integer id) {

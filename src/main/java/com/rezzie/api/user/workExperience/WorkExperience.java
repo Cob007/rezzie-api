@@ -29,16 +29,18 @@ public class WorkExperience {
     @Column(nullable = false)
     private Date startDate;
 
-    private Boolean isActive;
+    private Boolean active;
 
     @Column(nullable = false)
     private Date endDate;
 
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = false, length=512)
     private String achievement;
 
     @ManyToOne(fetch= FetchType.LAZY)
     @JsonIgnore
+    @JoinColumn(name="user_id", nullable=false)
     private User user;
 
     public void setId(Integer id) {
@@ -90,11 +92,11 @@ public class WorkExperience {
     }
 
     public Boolean getActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(Boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public Date getEndDate() {

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rezzie.api.user.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 
@@ -16,6 +15,7 @@ public class ContactInformation {
 
     @OneToOne(fetch= FetchType.LAZY)
     @JsonIgnore
+    @JoinColumn(name="user_id", nullable=false)
     private User user;
 
     @NotNull

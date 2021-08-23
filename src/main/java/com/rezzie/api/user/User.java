@@ -12,7 +12,6 @@ import com.rezzie.api.user.workExperience.WorkExperience;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "user",
@@ -105,6 +104,7 @@ public class User {
     public void setHeadline(Headline headline) {
         this.headline = headline;
     }
+
 
     public List<WorkExperience> getWorkExperiences() {
         return workExperiences;
