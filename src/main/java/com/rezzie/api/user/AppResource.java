@@ -209,7 +209,7 @@ public class AppResource {
 
     @PostMapping("/api/users/{id}/headline")
     @ResponseStatus(code = HttpStatus.OK)
-    public Res<Headline> createHeadline(@PathVariable int id, @RequestBody Headline headline) {
+    public Res<?> createHeadline(@PathVariable int id, @RequestBody Headline headline) {
 
         Optional<User> userOptional = userRepository.findById(id);
         Res<Headline> userNewPost = new Res<>();
@@ -221,16 +221,18 @@ public class AppResource {
         }
         User user = userOptional.get();
         headline.setUser(user);
+
         if (headline.getDetails().length()<200 ){
             return Res.errorResponse("Headline is less than 200");
-        } else if (headlineRepository.findAll().size()>=1){
-            return Res.errorResponse("Entry has already been made for this user");
         }
-        headlineRepository.save(headline);
-        userNewPost.setStatus(true);
-        userNewPost.setMessage("Created successfully");
-        userNewPost.setData(headline);
-        return userNewPost;
+        return
+                headlineRepository.findByUser(user).map(headline1 ->
+                        Res.errorResponse("Entry has already been made for this user")
+                ).orElseGet(()-> {
+                    headlineRepository.save(headline);
+                    return Res.successResponse("Created Successfully", headline);
+                });
+
     }
 
     /*
@@ -273,15 +275,16 @@ public class AppResource {
             userNewPost.setData(null);
             return userNewPost;
         }
-
-        if (contactInformationRepository.findAll().size()>=1){
-            return Res.errorResponse("Entry has already been made for this user");
-        }
-
         User user = userOptional.get();
         contactInfo.setUser(user);
-        contactInformationRepository.save(contactInfo);
-        return Res.successResponse("Created successfully", user.getContactInformation());
+
+        return
+                contactInformationRepository.findByUser(user).map(headline1 ->
+                        Res.errorResponse("Entry has already been made for this user")
+                ).orElseGet(()-> {
+                    contactInformationRepository.save(contactInfo);
+                    return Res.successResponse("Created Successfully", contactInfo);
+                });
 
     }
 
