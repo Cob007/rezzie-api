@@ -288,6 +288,44 @@ public class AppResource {
 
     }
 
+    @PostMapping("/api/users/{id}/contact/{contactId}/edit")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<?> editContact(@PathVariable int id,
+                              @PathVariable int contactId,
+                              @RequestBody ContactInformation contactInfo) {
+        System.out.println("user id.....-> "+ id);
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<ContactInformation> userNewPost = new Res<>();
+        if(!userOptional.isPresent()) {
+            userNewPost.setStatus(false);
+            userNewPost.setMessage("User not found");
+            userNewPost.setData(null);
+            return userNewPost;
+        }
+        User user = userOptional.get();
+        Optional<ContactInformation> contactInformation = contactInformationRepository.findById(contactId);
+        if(!contactInformation.isPresent()) {
+            userNewPost.setStatus(false);
+            userNewPost.setMessage("Contact Information not found");
+            userNewPost.setData(null);
+            return userNewPost;
+        }
+        ContactInformation contactInfoEdit = contactInformation.get();
+        contactInfoEdit.setCity(contactInfo.getCity());
+        contactInfoEdit.setCountry(contactInfo.getCountry());
+        contactInfoEdit.setLinkedInUrl(contactInfo.getLinkedInUrl());
+        contactInfoEdit.setPortfolioUrl(contactInfo.getPortfolioUrl());
+
+        return
+                contactInformationRepository.findByUser(user).map(contact ->
+                        Res.errorResponse("Entry has already been made for this user")
+                ).orElseGet(()-> {
+                    contactInformationRepository.save(contactInfoEdit);
+                    return Res.successResponse("Updated Successfully", contactInfo);
+                });
+
+    }
+
 /******
  * Work Experience
  * */
@@ -363,6 +401,43 @@ public class AppResource {
         return workExperienceRes;
     }
 
+    @PostMapping("/api/users/{id}/workexperience/{weId}/edit")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<WorkExperience> editAllWorkExperienceByUserIdAndExperienceId(@PathVariable int id,
+                                                                            @PathVariable int weId,
+                                                                            @RequestBody WorkExperience workExperience) {
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<WorkExperience> workExperienceRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            workExperienceRes.setStatus(false);
+            workExperienceRes.setMessage("User not found");
+            workExperienceRes.setData(null);
+            return workExperienceRes;
+        }
+        Optional<WorkExperience> workExperienceOptional =
+                workExperienceRepository.findById(weId);
+        if(!workExperienceOptional.isPresent()) {
+            workExperienceRes.setStatus(false);
+            workExperienceRes.setMessage("work experience not found");
+            workExperienceRes.setData(null);
+            return workExperienceRes;
+        }
+
+        WorkExperience workExperienceEdit = workExperienceOptional.get();
+
+        workExperienceEdit.setTitle(workExperience.getTitle());
+        workExperienceEdit.setEmploymentType(workExperience.getEmploymentType());
+        workExperienceEdit.setCompanyName(workExperience.getCompanyName());
+        workExperienceEdit.setCompanyLocation(workExperience.getCompanyLocation());
+        workExperienceEdit.setStartDate(workExperience.getStartDate());
+        workExperienceEdit.setActive(workExperience.getActive());
+        workExperienceEdit.setEndDate(workExperience.getEndDate());
+        workExperienceEdit.setAchievement(workExperience.getAchievement());
+
+        workExperienceRepository.save(workExperienceEdit);
+        return Res.successResponse("Updated Successfully", workExperienceEdit);
+    }
+
     @DeleteMapping("/api/users/{id}/workexperience/{weId}")
     @ResponseStatus(code = HttpStatus.OK)
     public Res<WorkExperience> deleteAllWorkExperienceByUserIdAndExperienceId(
@@ -390,8 +465,6 @@ public class AppResource {
         workExperienceRes.setMessage("Delete successfully");
         return workExperienceRes;
     }
-
-
     /******
      * Education
      * */
@@ -462,6 +535,71 @@ public class AppResource {
         educationRes.setMessage("Created successfully");
         educationRes.setData(educationOptional.get());
         return educationRes;
+    }
+
+    @DeleteMapping("/api/users/{id}/education/{educationId}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<Education> deleteEducationByUserId(
+            @PathVariable int id, @PathVariable int educationId) {
+
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<Education> educationRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            educationRes.setStatus(false);
+            educationRes.setMessage("User not found");
+            educationRes.setData(null);
+            return educationRes;
+        }
+
+        Optional<Education> educationOptional =
+                educationRepository.findById(educationId);
+        if(!educationOptional.isPresent()) {
+            educationRes.setStatus(false);
+            educationRes.setMessage("work experience not found");
+            educationRes.setData(null);
+            return educationRes;
+        }
+        educationRepository.deleteById(educationId);
+        educationRes.setStatus(true);
+        educationRes.setMessage("Delete successfully");
+        return educationRes;
+    }
+
+    @PostMapping("/api/users/{id}/education/{educationId}/edit")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<Education> editAllEducationByUserId(@PathVariable int id,
+                                                   @PathVariable int educationId,
+                                                   @RequestBody Education education) {
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<Education> educationRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            educationRes.setStatus(false);
+            educationRes.setMessage("User not found");
+            educationRes.setData(null);
+            return educationRes;
+        }
+        Optional<Education> educationOptional =
+                educationRepository.findById(educationId);
+        if(!educationOptional.isPresent()) {
+            educationRes.setStatus(false);
+            educationRes.setMessage("Education Record not found");
+            educationRes.setData(null);
+            return educationRes;
+        }
+
+        Education educationEdit = educationOptional.get();
+
+        educationEdit.setName(education.getName());
+        educationEdit.setDegree(education.getDegree());
+        educationEdit.setFieldOfStudy(education.getFieldOfStudy());
+        educationEdit.setGrade(education.getGrade());
+        educationEdit.setStartDate(education.getStartDate());
+        educationEdit.setActive(education.getActive());
+        educationEdit.setEndDate(education.getEndDate());
+        educationEdit.setOthers(education.getOthers());
+
+        educationRepository.save(educationEdit);
+        return Res.successResponse("Updated Successfully", educationEdit);
     }
 
     /******
@@ -538,7 +676,68 @@ public class AppResource {
         return volunteerHistoryRes;
     }
 
+    @DeleteMapping("/api/users/{id}/volunteerHistory/{volunteerHistoryId}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<VolunteerHistory> deleteVolunteerHistoryByUserId(
+            @PathVariable int id, @PathVariable int volunteerHistoryId) {
 
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<VolunteerHistory> volunteerHistoryRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            volunteerHistoryRes.setStatus(false);
+            volunteerHistoryRes.setMessage("User not found");
+            volunteerHistoryRes.setData(null);
+            return volunteerHistoryRes;
+        }
+
+        Optional<VolunteerHistory> educationOptional =
+                volunteerHistoryRepository.findById(volunteerHistoryId);
+        if(!educationOptional.isPresent()) {
+            volunteerHistoryRes.setStatus(false);
+            volunteerHistoryRes.setMessage("work experience not found");
+            volunteerHistoryRes.setData(null);
+            return volunteerHistoryRes;
+        }
+        educationRepository.deleteById(volunteerHistoryId);
+        volunteerHistoryRes.setStatus(true);
+        volunteerHistoryRes.setMessage("Delete successfully");
+        return volunteerHistoryRes;
+    }
+
+    @PostMapping("/api/users/{id}/volunteerHistory/{volunteerHistoryId}/edit")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<VolunteerHistory> editAllVolunteerHistoryByUserId(@PathVariable int id,
+                                                   @PathVariable int volunteerHistoryId,
+                                                   @RequestBody VolunteerHistory volunteerHistory) {
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<VolunteerHistory> volunteerHistoryRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            volunteerHistoryRes.setStatus(false);
+            volunteerHistoryRes.setMessage("User not found");
+            volunteerHistoryRes.setData(null);
+            return volunteerHistoryRes;
+        }
+        Optional<VolunteerHistory> volunteerHistoryOptional =
+                volunteerHistoryRepository.findById(volunteerHistoryId);
+        if(!volunteerHistoryOptional.isPresent()) {
+            volunteerHistoryRes.setStatus(false);
+            volunteerHistoryRes.setMessage("Volunteer History record not found");
+            volunteerHistoryRes.setData(null);
+            return volunteerHistoryRes;
+        }
+
+        VolunteerHistory volunteerHistoryEdit = volunteerHistoryOptional.get();
+
+        volunteerHistoryEdit.setNameOfOrganization(volunteerHistory.getNameOfOrganization());
+        volunteerHistoryEdit.setRole(volunteerHistory.getRole());
+        volunteerHistoryEdit.setRoleDetails(volunteerHistory.getRoleDetails());
+        volunteerHistoryEdit.setStartDate(volunteerHistory.getStartDate());
+        volunteerHistoryEdit.setActive(volunteerHistory.getActive());
+        volunteerHistoryEdit.setEndDate(volunteerHistory.getEndDate());
+
+        volunteerHistoryRepository.save(volunteerHistoryEdit);
+        return Res.successResponse("Updated Successfully", volunteerHistoryEdit);
+    }
     /******
      * LicenseAndCertificate
      * */
@@ -612,6 +811,80 @@ public class AppResource {
         licenseAndCertificateRes.setData(volunteerHistoryOptional.get());
         return licenseAndCertificateRes;
     }
+
+    @DeleteMapping("/api/users/{id}/licenseAndCertificate/{licenseAndCertificateId}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<LicenseAndCertificate> deleteLicenceByUserId(
+            @PathVariable int id, @PathVariable int licenseAndCertificateId) {
+
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<LicenseAndCertificate> licenseAndCertificateRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            licenseAndCertificateRes.setStatus(false);
+            licenseAndCertificateRes.setMessage("User not found");
+            licenseAndCertificateRes.setData(null);
+            return licenseAndCertificateRes;
+        }
+
+        Optional<LicenseAndCertificate> licenseAndCertificateOptional =
+                licenseAndCertificateRepository.findById(licenseAndCertificateId);
+        if(!licenseAndCertificateOptional.isPresent()) {
+            licenseAndCertificateRes.setStatus(false);
+            licenseAndCertificateRes.setMessage("work experience not found");
+            licenseAndCertificateRes.setData(null);
+            return licenseAndCertificateRes;
+        }
+        licenseAndCertificateRepository.deleteById(licenseAndCertificateId);
+        licenseAndCertificateRes.setStatus(true);
+        licenseAndCertificateRes.setMessage("Delete successfully");
+        return licenseAndCertificateRes;
+    }
+
+    @PostMapping("/api/users/{id}/licenseAndCertificate/{licenseAndCertificateId}/edit")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<LicenseAndCertificate> editLicenceHistoryByUserId(@PathVariable int id,
+                                                                 @PathVariable int licenseAndCertificateId,
+                                                                 @RequestBody LicenseAndCertificate licenseAndCertificate) {
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<LicenseAndCertificate> licenseAndCertificateRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            licenseAndCertificateRes.setStatus(false);
+            licenseAndCertificateRes.setMessage("User not found");
+            licenseAndCertificateRes.setData(null);
+            return licenseAndCertificateRes;
+        }
+        Optional<LicenseAndCertificate> licenseAndCertificateOptional =
+                licenseAndCertificateRepository.findById(licenseAndCertificateId);
+        if(!licenseAndCertificateOptional.isPresent()) {
+            licenseAndCertificateRes.setStatus(false);
+            licenseAndCertificateRes.setMessage("License and Certificate record not found");
+            licenseAndCertificateRes.setData(null);
+            return licenseAndCertificateRes;
+        }
+
+        LicenseAndCertificate licenseAndCertificateEdit = licenseAndCertificateOptional.get();
+
+        licenseAndCertificateEdit.setNameOfCertificate(licenseAndCertificate.getNameOfCertificate());
+        licenseAndCertificateEdit.setRole(licenseAndCertificate.getRole());
+        licenseAndCertificateEdit.setIssuingOrganization(licenseAndCertificate.getIssuingOrganization());
+        licenseAndCertificateEdit.setIssueDate(licenseAndCertificate.getIssueDate());
+        licenseAndCertificateEdit.setCanExpire(licenseAndCertificate.getCanExpire());
+        licenseAndCertificateEdit.setExpirationDate(licenseAndCertificate.getExpirationDate());
+        licenseAndCertificateEdit.setCredentialId(licenseAndCertificate.getCredentialId());
+        licenseAndCertificateEdit.setCredentialUrl(licenseAndCertificate.getCredentialUrl());
+
+        licenseAndCertificateRepository.save(licenseAndCertificateEdit);
+        return Res.successResponse("Updated Successfully", licenseAndCertificateEdit);
+    }
+
+    /******
+     * Skills
+     * */
+
+
+    /******
+     * Accomplishment
+     * */
 
 
 
