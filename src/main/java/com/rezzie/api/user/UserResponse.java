@@ -10,70 +10,39 @@ import com.rezzie.api.user.skills.Skills;
 import com.rezzie.api.user.volunteerHistory.VolunteerHistory;
 import com.rezzie.api.user.workExperience.WorkExperience;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
 
-@Entity
-@Table(name = "user",
-        uniqueConstraints = @UniqueConstraint(columnNames = "email"))
-public class User {
-    @Id
-    @GeneratedValue
-    private Integer id;
 
-    @Column(nullable = false)
+public class UserResponse {
+
     private String firstName;
 
-    @Column(nullable = false)
     private String lastName;
 
-    @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
-    @JsonIgnore
-    private String password;
-
-    @Column(updatable = true)
-    @JsonFormat(pattern="yyyy-MM-dd")
     private Date dateOfBirth;
 
-    @Column(updatable = true)
     private String gender;
 
     private Boolean active;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "user")
     private ContactInformation contactInformation;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "user")
+
     private Headline headline;
 
-    @JsonIgnore
-    @OneToMany(mappedBy="user")
-    private List<Post> posts;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
     private List<WorkExperience> workExperiences;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
     private List<Education> educations;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
     private List<VolunteerHistory> volunteerHistories;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
     private List<LicenseAndCertificate> licenseAndCertificates;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
     private List<Skills> skills;
 
     public List<Skills> getSkills() {
@@ -84,23 +53,8 @@ public class User {
         this.skills = skills;
     }
 
-    protected User() { }
+    protected UserResponse() { }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public List<Post> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
-    }
 
     public ContactInformation getContactInformation() {
         return contactInformation;
@@ -154,7 +108,6 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
@@ -162,7 +115,6 @@ public class User {
                 ", gender='" + gender + '\'' +
                 ", contactInformation=" + contactInformation +
                 ", headline=" + headline +
-                ", posts=" + posts +
                 ", workExperiences=" + workExperiences +
                 ", educations=" + educations +
                 ", volunteerHistories=" + volunteerHistories +
@@ -217,14 +169,5 @@ public class User {
     public void setActive(Boolean active) {
         active = active;
     }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
 
 }

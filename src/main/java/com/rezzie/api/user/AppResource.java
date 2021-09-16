@@ -8,6 +8,8 @@ import com.rezzie.api.user.headline.Headline;
 import com.rezzie.api.user.headline.HeadlineRepository;
 import com.rezzie.api.user.licenseAndCertificate.LicenseAndCertificate;
 import com.rezzie.api.user.licenseAndCertificate.LicenseAndCertificateRepository;
+import com.rezzie.api.user.skills.Skills;
+import com.rezzie.api.user.skills.SkillsRepository;
 import com.rezzie.api.user.volunteerHistory.VolunteerHistory;
 import com.rezzie.api.user.volunteerHistory.VolunteerHistoryRepository;
 import com.rezzie.api.user.workExperience.WorkExperience;
@@ -17,10 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -49,6 +48,8 @@ public class AppResource {
     @Autowired
     private LicenseAndCertificateRepository licenseAndCertificateRepository;
 
+    @Autowired
+    private SkillsRepository skillsRepository;
 
     @PostMapping("/api/register")
     @ResponseStatus(code = HttpStatus.OK)
@@ -234,6 +235,35 @@ public class AppResource {
                 });
 
     }
+    @PostMapping("api/users/{id}/headline/{headlineId}/edit")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<?> editHeadline(@PathVariable int id,
+                              @PathVariable int headlineId,
+                              @RequestBody Headline headline) {
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<ContactInformation> userNewPost = new Res<>();
+        if(!userOptional.isPresent()) {
+            userNewPost.setStatus(false);
+            userNewPost.setMessage("User not found");
+            userNewPost.setData(null);
+            return userNewPost;
+        }
+        Optional<Headline> headlineOptional =
+                headlineRepository.findById(headlineId);
+        if(!headlineOptional.isPresent()) {
+            userNewPost.setStatus(false);
+            userNewPost.setMessage("Headline not found");
+            userNewPost.setData(null);
+            return userNewPost;
+        }
+        Headline headlineEdit = headlineOptional.get();
+        if (headline.getDetails().length()<200 ){
+            return Res.errorResponse("Headline is less than 200");
+        }
+        headlineEdit.setDetails(headline.getDetails());
+        headlineRepository.save(headlineEdit);
+        return Res.successResponse("Updated Successfully", headlineEdit);
+    }
 
     /*
     *         //Optional<User> userOptional = userRepository.findById(id);
@@ -316,13 +346,9 @@ public class AppResource {
         contactInfoEdit.setLinkedInUrl(contactInfo.getLinkedInUrl());
         contactInfoEdit.setPortfolioUrl(contactInfo.getPortfolioUrl());
 
-        return
-                contactInformationRepository.findByUser(user).map(contact ->
-                        Res.errorResponse("Entry has already been made for this user")
-                ).orElseGet(()-> {
-                    contactInformationRepository.save(contactInfoEdit);
-                    return Res.successResponse("Updated Successfully", contactInfo);
-                });
+        contactInformationRepository.save(contactInfoEdit);
+        return Res.successResponse("Updated Successfully", contactInfoEdit);
+
 
     }
 
@@ -348,7 +374,7 @@ public class AppResource {
         workExperienceRepository.save(workExperience);
 
         userNewPost.setStatus(true);
-        userNewPost.setMessage("Successfully");
+        userNewPost.setMessage("Created Successfully");
         userNewPost.setData(workExperience);
         return userNewPost;
     }
@@ -367,7 +393,7 @@ public class AppResource {
         }
 
         workExperienceRes.setStatus(true);
-        workExperienceRes.setMessage("Created successfully");
+        workExperienceRes.setMessage("Fetched successfully");
         workExperienceRes.setData(userOptional.get().getWorkExperiences());
         return workExperienceRes;
     }
@@ -396,7 +422,7 @@ public class AppResource {
         }
 
         workExperienceRes.setStatus(true);
-        workExperienceRes.setMessage("Created successfully");
+        workExperienceRes.setMessage("Fetched successfully");
         workExperienceRes.setData(workExperienceOptional.get());
         return workExperienceRes;
     }
@@ -462,7 +488,7 @@ public class AppResource {
         }
         workExperienceRepository.deleteById(weId);
         workExperienceRes.setStatus(true);
-        workExperienceRes.setMessage("Delete successfully");
+        workExperienceRes.setMessage("Deleted successfully");
         return workExperienceRes;
     }
     /******
@@ -504,7 +530,7 @@ public class AppResource {
         }
 
         workExperienceRes.setStatus(true);
-        workExperienceRes.setMessage("Created successfully");
+        workExperienceRes.setMessage("Fetched successfully");
         workExperienceRes.setData(userOptional.get().getEducations());
         return workExperienceRes;
     }
@@ -527,12 +553,12 @@ public class AppResource {
                 educationRepository.findById(educationId);
         if(!educationOptional.isPresent()) {
             educationRes.setStatus(false);
-            educationRes.setMessage("work experience not found");
+            educationRes.setMessage("Education not found");
             educationRes.setData(null);
             return educationRes;
         }
         educationRes.setStatus(true);
-        educationRes.setMessage("Created successfully");
+        educationRes.setMessage("Fetched successfully");
         educationRes.setData(educationOptional.get());
         return educationRes;
     }
@@ -555,13 +581,13 @@ public class AppResource {
                 educationRepository.findById(educationId);
         if(!educationOptional.isPresent()) {
             educationRes.setStatus(false);
-            educationRes.setMessage("work experience not found");
+            educationRes.setMessage("Education not found");
             educationRes.setData(null);
             return educationRes;
         }
         educationRepository.deleteById(educationId);
         educationRes.setStatus(true);
-        educationRes.setMessage("Delete successfully");
+        educationRes.setMessage("Deleted successfully");
         return educationRes;
     }
 
@@ -666,7 +692,7 @@ public class AppResource {
                 volunteerHistoryRepository.findById(volunteerHistoryId);
         if(!volunteerHistoryOptional.isPresent()) {
             volunteerHistoryRes.setStatus(false);
-            volunteerHistoryRes.setMessage("work experience not found");
+            volunteerHistoryRes.setMessage("Volunteer history not found");
             volunteerHistoryRes.setData(null);
             return volunteerHistoryRes;
         }
@@ -694,13 +720,13 @@ public class AppResource {
                 volunteerHistoryRepository.findById(volunteerHistoryId);
         if(!educationOptional.isPresent()) {
             volunteerHistoryRes.setStatus(false);
-            volunteerHistoryRes.setMessage("work experience not found");
+            volunteerHistoryRes.setMessage("Volunteer history not found");
             volunteerHistoryRes.setData(null);
             return volunteerHistoryRes;
         }
-        educationRepository.deleteById(volunteerHistoryId);
+        volunteerHistoryRepository.deleteById(volunteerHistoryId);
         volunteerHistoryRes.setStatus(true);
-        volunteerHistoryRes.setMessage("Delete successfully");
+        volunteerHistoryRes.setMessage("Deleted successfully");
         return volunteerHistoryRes;
     }
 
@@ -778,7 +804,7 @@ public class AppResource {
         }
 
         licenseAndCertificateRes.setStatus(true);
-        licenseAndCertificateRes.setMessage("Created successfully");
+        licenseAndCertificateRes.setMessage("Fetched successfully");
         licenseAndCertificateRes.setData(userOptional.get().getLicenseAndCertificates());
         return licenseAndCertificateRes;
     }
@@ -802,12 +828,12 @@ public class AppResource {
                 licenseAndCertificateRepository.findById(licenseAndCertificateId);
         if(!volunteerHistoryOptional.isPresent()) {
             licenseAndCertificateRes.setStatus(false);
-            licenseAndCertificateRes.setMessage("work experience not found");
+            licenseAndCertificateRes.setMessage("License and certificate not found");
             licenseAndCertificateRes.setData(null);
             return licenseAndCertificateRes;
         }
         licenseAndCertificateRes.setStatus(true);
-        licenseAndCertificateRes.setMessage("Created successfully");
+        licenseAndCertificateRes.setMessage("Fetched successfully");
         licenseAndCertificateRes.setData(volunteerHistoryOptional.get());
         return licenseAndCertificateRes;
     }
@@ -830,13 +856,13 @@ public class AppResource {
                 licenseAndCertificateRepository.findById(licenseAndCertificateId);
         if(!licenseAndCertificateOptional.isPresent()) {
             licenseAndCertificateRes.setStatus(false);
-            licenseAndCertificateRes.setMessage("work experience not found");
+            licenseAndCertificateRes.setMessage("License and certificate not found");
             licenseAndCertificateRes.setData(null);
             return licenseAndCertificateRes;
         }
         licenseAndCertificateRepository.deleteById(licenseAndCertificateId);
         licenseAndCertificateRes.setStatus(true);
-        licenseAndCertificateRes.setMessage("Delete successfully");
+        licenseAndCertificateRes.setMessage("Deleted successfully");
         return licenseAndCertificateRes;
     }
 
@@ -880,11 +906,138 @@ public class AppResource {
     /******
      * Skills
      * */
+    @PostMapping("/api/users/{id}/skills")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<?> createSkill(@PathVariable int id,
+                                   @RequestBody List<Skills> skills) {
 
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<List<Skills>> skillsRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            skillsRes.setStatus(false);
+            skillsRes.setMessage("User not found");
+            skillsRes.setData(null);
+            return skillsRes;
+        }
+        User user = userOptional.get();
+        for (Skills s: skills){
+            s.setUser(user);
+            skillsRepository.save(s);
+        }
+
+        skillsRes.setStatus(true);
+        skillsRes.setMessage("Created successfully");
+        skillsRes.setData(skills);
+        return skillsRes;
+    }
+
+    @GetMapping("/api/users/{id}/skills")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<List<Skills>> getAllSkillByUserId(@PathVariable int id) {
+
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<List<Skills>> skillRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            skillRes.setStatus(false);
+            skillRes.setMessage("User not found");
+            skillRes.setData(null);
+            return skillRes;
+        }
+
+        skillRes.setStatus(true);
+        skillRes.setMessage("Fetched successfully");
+        skillRes.setData(userOptional.get().getSkills());
+        return skillRes;
+    }
+
+    @GetMapping("/api/users/{id}/skills/{skillsId}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<Skills> getSkillsByUserIdAndEducationId
+            (@PathVariable int id, @PathVariable int skillsId) {
+
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<Skills> skillsRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            skillsRes.setStatus(false);
+            skillsRes.setMessage("User not found");
+            skillsRes.setData(null);
+            return skillsRes;
+        }
+
+        Optional<Skills> skillsOptional =
+                skillsRepository.findById(skillsId);
+        if(!skillsOptional.isPresent()) {
+            skillsRes.setStatus(false);
+            skillsRes.setMessage("Skills not found");
+            skillsRes.setData(null);
+            return skillsRes;
+        }
+        skillsRes.setStatus(true);
+        skillsRes.setMessage("Fetched successfully");
+        skillsRes.setData(skillsOptional.get());
+        return skillsRes;
+    }
+
+    @PostMapping("/api/users/{id}/skills/edit")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<?> editSkillsUserId(@PathVariable int id,
+                                   @RequestBody List<Skills> skills) {
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<Skills> skillsRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            skillsRes.setStatus(false);
+            skillsRes.setMessage("User not found");
+            skillsRes.setData(null);
+            return skillsRes;
+        }
+        skillsRepository.deleteAll();
+        User user = userOptional.get();
+        for (Skills s: skills) {
+            s.setUser(user);
+            skillsRepository.save(s);
+        }
+        return Res.successResponse("Updated Successfully", skills);
+    }
 
     /******
      * Accomplishment
      * */
+
+
+    /******
+     * GetAllById
+     * */
+    @GetMapping("/api/users/{id}/get")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Res<?> getProfile(@PathVariable int id){
+        Optional<User> userOptional = userRepository.findById(id);
+        Res<Skills> skillsRes = new Res<>();
+        if(!userOptional.isPresent()) {
+            skillsRes.setStatus(false);
+            skillsRes.setMessage("User not found");
+            skillsRes.setData(null);
+            return skillsRes;
+        }
+        User user = userOptional.get();
+        UserResponse userRes = new UserResponse();
+        userRes.setFirstName(user.getFirstName());
+        userRes.setLastName(user.getLastName());
+        userRes.setEmail(user.getEmail());
+        userRes.setDateOfBirth(user.getDateOfBirth());
+        userRes.setGender(user.getGender());
+        userRes.setActive(user.getActive());
+        userRes.setVolunteerHistories(user.getVolunteerHistories());
+        userRes.setContactInformation(user.getContactInformation());
+        userRes.setHeadline(user.getHeadline());
+        userRes.setEducations(user.getEducations());
+        userRes.setLicenseAndCertificates(user.getLicenseAndCertificates());
+        userRes.setSkills(user.getSkills());
+        userRes.setHeadline(user.getHeadline());
+        userRes.setEducations(user.getEducations());
+        userRes.setWorkExperiences(user.getWorkExperiences());
+        return Res.successResponse("User Profile", userRes);
+    }
+
 
 
 
