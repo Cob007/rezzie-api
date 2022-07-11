@@ -9,148 +9,98 @@ import com.rezzie.api.user.licenseAndCertificate.LicenseAndCertificate;
 import com.rezzie.api.user.skills.Skills;
 import com.rezzie.api.user.volunteerHistory.VolunteerHistory;
 import com.rezzie.api.user.workExperience.WorkExperience;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
 
+
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
+@Builder
 @Entity
 @Table(name = "user",
         uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class User {
+    @Getter @Setter
     @Id
     @GeneratedValue
     private Integer id;
 
+    @Getter @Setter
     @Column(nullable = false)
     private String firstName;
 
+    @Getter @Setter
     @Column(nullable = false)
     private String lastName;
 
+    @Getter @Setter
     @Column(nullable = false)
     private String email;
 
+    @Getter @Setter
     @Column(nullable = false)
     @JsonIgnore
     private String password;
 
+    @Getter @Setter
     @Column(updatable = true)
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date dateOfBirth;
 
+    @Getter @Setter
     @Column(updatable = true)
     private String gender;
 
+    @Getter @Setter
     private Boolean active;
 
+    @Getter @Setter
     @JsonIgnore
     @OneToOne(mappedBy = "user")
     private ContactInformation contactInformation;
 
+    @Getter @Setter
     @JsonIgnore
     @OneToOne(mappedBy = "user")
     private Headline headline;
 
+    @Getter @Setter
     @JsonIgnore
     @OneToMany(mappedBy="user")
     private List<Post> posts;
 
+
+    @Getter @Setter
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<WorkExperience> workExperiences;
 
+
+    @Getter @Setter
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Education> educations;
 
+    @Getter @Setter
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<VolunteerHistory> volunteerHistories;
 
+    @Getter @Setter
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<LicenseAndCertificate> licenseAndCertificates;
 
+    @Getter @Setter
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Skills> skills;
 
-    public List<Skills> getSkills() {
-        return skills;
-    }
-
-    public void setSkills(List<Skills> skills) {
-        this.skills = skills;
-    }
-
-    protected User() { }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public List<Post> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
-    }
-
-    public ContactInformation getContactInformation() {
-        return contactInformation;
-    }
-
-    public void setContactInformation(ContactInformation contactInformation) {
-        this.contactInformation = contactInformation;
-    }
-
-    public Headline getHeadline() {
-        return headline;
-    }
-
-    public void setHeadline(Headline headline) {
-        this.headline = headline;
-    }
-
-
-    public List<WorkExperience> getWorkExperiences() {
-        return workExperiences;
-    }
-
-    public void setWorkExperiences(List<WorkExperience> workExperiences) {
-        this.workExperiences = workExperiences;
-    }
-
-    public List<Education> getEducations() {
-        return educations;
-    }
-
-    public void setEducations(List<Education> educations) {
-        this.educations = educations;
-    }
-
-    public List<VolunteerHistory> getVolunteerHistories() {
-        return volunteerHistories;
-    }
-
-    public void setVolunteerHistories(List<VolunteerHistory> volunteerHistories) {
-        this.volunteerHistories = volunteerHistories;
-    }
-
-    public List<LicenseAndCertificate> getLicenseAndCertificates() {
-        return licenseAndCertificates;
-    }
-
-    public void setLicenseAndCertificates(List<LicenseAndCertificate> licenseAndCertificates) {
-        this.licenseAndCertificates = licenseAndCertificates;
-    }
-
+/*
     @Override
     public String toString() {
         return "User{" +
@@ -168,63 +118,8 @@ public class User {
                 ", volunteerHistories=" + volunteerHistories +
                 ", licenseAndCertificates=" + licenseAndCertificates +
                 '}';
-    }
+    }*/
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        active = active;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
 
 }
