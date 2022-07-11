@@ -1,12 +1,20 @@
 package com.rezzie.api.user;
 
+import lombok.*;
+
+@NoArgsConstructor
+@EqualsAndHashCode
+@Builder
 public class Res<T> {
+    @Getter @Setter
     private Boolean status;
+    @Getter @Setter
     private String message;
+    @Getter @Setter
     private T data;
 
-    public Res() {
-    }
+    /*public Res() {
+    }*/
 
     public Res(Boolean status, String message, T data) {
         this.status = status;
@@ -18,7 +26,6 @@ public class Res<T> {
         this.status = status;
         this.message = message;
     }
-
 
     public static <T> Res<T> errorResponse(String errorMsg){
         return new Res<T>(false, errorMsg, null);
@@ -32,6 +39,7 @@ public class Res<T> {
         return new Res<T>(true, successMsg);
     }
 
+/*
     public Boolean getStatus() {
         return status;
     }
@@ -55,4 +63,6 @@ public class Res<T> {
     public void setData(T data) {
         this.data = data;
     }
+*/
+
 }
